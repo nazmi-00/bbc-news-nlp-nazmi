@@ -12,6 +12,7 @@ import seaborn as sns
 from wordcloud import WordCloud
 
 
+
 # ============================================================
 # Page Configuration
 # ============================================================
@@ -23,6 +24,48 @@ st.set_page_config(
 )
 
 
+
+# ============================================================
+# Sidebar
+# ============================================================
+
+with st.sidebar:
+
+    st.title(
+        "📰 BBC News NLP"
+    )
+
+    st.write(
+    """
+    **Natural Language Processing Application**
+
+    This application classifies BBC news articles
+    into different categories.
+
+    NLP Techniques:
+
+    ✔ Text Preprocessing  
+    ✔ TF-IDF  
+    ✔ N-gram Feature Extraction  
+    ✔ Naive Bayes Classification  
+    ✔ SVM Comparison
+    """
+    )
+
+
+    st.divider()
+
+
+    st.info(
+        """
+        SAIA 2163
+
+        NLP Final Project
+        """
+    )
+
+
+
 # ============================================================
 # Load Models
 # ============================================================
@@ -30,23 +73,26 @@ st.set_page_config(
 @st.cache_resource
 def load_models():
 
+    nb_model = joblib.load(
+        "models/nb_model.pkl"
+    )
+
+
     svm_model = joblib.load(
         "models/svm_model.pkl"
     )
 
-    nb_model = joblib.load(
-        "models/nb_model.pkl"
-    )
 
     tfidf = joblib.load(
         "models/tfidf_ngram.pkl"
     )
 
-    return svm_model, nb_model, tfidf
+
+    return nb_model, svm_model, tfidf
 
 
 
-svm_model, nb_model, tfidf = load_models()
+nb_model, svm_model, tfidf = load_models()
 
 
 
@@ -81,8 +127,9 @@ st.title(
 
 st.write(
 """
-NLP application that classifies BBC news articles into categories
-using TF-IDF + N-gram feature extraction and Machine Learning models.
+An NLP application that automatically classifies BBC news articles
+into categories using TF-IDF + N-gram feature extraction and
+Machine Learning algorithms.
 """
 )
 
@@ -106,7 +153,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(
 
 
 # ============================================================
-# TAB 1: TEXT ANALYZER
+# TAB 1 : TEXT ANALYZER
 # ============================================================
 
 
@@ -114,67 +161,83 @@ with tab1:
 
 
     st.header(
-        "Enter News Article"
+        "🔍 News Article Classification"
     )
 
 
     text = st.text_area(
-        "News content:",
-        height=200
+        "Enter News Article:",
+        height=250,
+        placeholder="Paste article content here..."
     )
 
 
     if st.button(
-        "Predict Category"
+        "🚀 Analyze Article"
     ):
 
 
         if text.strip():
 
 
+            # Convert text into TF-IDF + N-gram features
+
             vector = tfidf.transform(
                 [text]
             )
 
 
-            prediction = svm_model.predict(
+            # Final model = Naive Bayes
+
+            prediction = nb_model.predict(
                 vector
-            )
+            )[0]
 
 
             st.success(
-                f"Prediction: {prediction[0]}"
+                f"Predicted Category: {prediction.upper()}"
             )
 
 
+
+            # Confidence score
+
             if hasattr(
-                svm_model,
+                nb_model,
                 "predict_proba"
             ):
 
 
                 confidence = (
-                    svm_model
+                    nb_model
                     .predict_proba(vector)
                     .max()
                     *100
                 )
 
 
-                st.info(
-                    f"Confidence: {confidence:.2f}%"
+                st.progress(
+                    confidence / 100
                 )
+
+
+                st.info(
+                    f"Confidence Score: {confidence:.2f}%"
+                )
+
+
 
         else:
 
+
             st.warning(
-                "Please enter text"
+                "Please enter news article text."
             )
 
 
 
 # ============================================================
-# TAB 2: DATA EXPLORER
+# TAB 2 : DATA EXPLORER
 # ============================================================
 
 
@@ -182,26 +245,12 @@ with tab2:
 
 
     st.header(
-        "Dataset Explorer"
+        "📊 Dataset Explorer"
     )
 
 
-    st.subheader(
-        "Sample Data"
-    )
+    col1,col2,col3 = st.columns(3)
 
-
-    st.dataframe(
-        df.head(10)
-    )
-
-
-    st.subheader(
-        "Dataset Statistics"
-    )
-
-
-    col1, col2, col3 = st.columns(3)
 
 
     with col1:
@@ -212,6 +261,7 @@ with tab2:
         )
 
 
+
     with col2:
 
         st.metric(
@@ -220,27 +270,49 @@ with tab2:
         )
 
 
+
     with col3:
+
+        avg_length = round(
+            df["text"]
+            .str.len()
+            .mean()
+        )
+
 
         st.metric(
             "Average Text Length",
-            round(
-                df["text"].str.len().mean()
-            )
+            avg_length
         )
 
 
 
     st.subheader(
-        "Category Distribution"
+        "Dataset Sample"
     )
 
 
-    fig, ax = plt.subplots()
+    st.dataframe(
+        df.head(10),
+        use_container_width=True
+    )
 
 
-    df["category"].value_counts().plot(
-        kind="bar",
+
+    st.subheader(
+        "News Category Distribution"
+    )
+
+
+
+    fig,ax = plt.subplots(
+        figsize=(8,4)
+    )
+
+
+    sns.countplot(
+        data=df,
+        x="category",
         ax=ax
     )
 
@@ -249,8 +321,14 @@ with tab2:
         "Category"
     )
 
+
     ax.set_ylabel(
         "Number of Articles"
+    )
+
+
+    plt.xticks(
+        rotation=45
     )
 
 
@@ -259,7 +337,7 @@ with tab2:
 
 
 # ============================================================
-# TAB 3: WORD CLOUD
+# TAB 3 : WORD CLOUD
 # ============================================================
 
 
@@ -267,7 +345,7 @@ with tab3:
 
 
     st.header(
-        "Word Cloud"
+        "☁️ Word Cloud"
     )
 
 
@@ -277,15 +355,17 @@ with tab3:
 
 
     wordcloud = WordCloud(
-        width=800,
-        height=400,
+        width=1000,
+        height=500,
         background_color="white"
-    ).generate(all_text)
+    ).generate(
+        all_text
+    )
 
 
 
-    fig, ax = plt.subplots(
-        figsize=(10,5)
+    fig,ax = plt.subplots(
+        figsize=(12,5)
     )
 
 
@@ -302,57 +382,129 @@ with tab3:
     st.pyplot(fig)
 
 
-# ============================================================
-# Confusion Matrix Visualization
-# ============================================================
-
-st.subheader(
-    "Confusion Matrix Comparison"
-)
-
-
-col1, col2 = st.columns(2)
-
 
 # ============================================================
-# Naive Bayes Confusion Matrix
+# TAB 4 : MODEL PERFORMANCE
 # ============================================================
 
-with col1:
 
-    st.markdown(
-        "### Naive Bayes"
-    )
+with tab4:
 
 
-    st.image(
-        "images/confusion_matrix_nb.png",
-        caption="Naive Bayes Confusion Matrix",
-        width="stretch"
+    st.header(
+        "📈 Model Performance Comparison"
     )
 
 
 
-# ============================================================
-# SVM Confusion Matrix
-# ============================================================
+    results = pd.DataFrame(
+    {
 
-with col2:
+        "Model":
+        [
+            "Naive Bayes",
+            "SVM"
+        ],
 
-    st.markdown(
-        "### SVM"
+
+        "Accuracy":
+        [
+            0.984,
+            0.982
+        ],
+
+
+        "Status":
+        [
+            "⭐ Selected Model",
+            "Comparison Model"
+        ]
+
+    })
+
+
+
+    st.dataframe(
+        results
     )
 
 
-    st.image(
-        "images/confusion_matrix_svm.png",
-        caption="SVM Confusion Matrix",
-        width="stretch"
+
+    # Accuracy chart
+
+
+    fig,ax = plt.subplots()
+
+
+    sns.barplot(
+        data=results,
+        x="Model",
+        y="Accuracy",
+        ax=ax
     )
 
 
+    ax.set_ylim(
+        0,
+        1
+    )
+
+
+    ax.set_title(
+        "Accuracy Comparison"
+    )
+
+
+    st.pyplot(fig)
+
+
+
+    # Confusion Matrix
+
+
+    st.subheader(
+        "Confusion Matrix Comparison"
+    )
+
+
+    col1,col2 = st.columns(2)
+
+
+
+    with col1:
+
+
+        st.markdown(
+            "### Naive Bayes"
+        )
+
+
+        st.image(
+            "images/confusion_matrix_nb.png",
+            caption="Naive Bayes Confusion Matrix",
+            width="stretch"
+        )
+
+
+
+    with col2:
+
+
+        st.markdown(
+            "### SVM"
+        )
+
+
+        st.image(
+            "images/confusion_matrix_svm.png",
+            caption="SVM Confusion Matrix",
+            width="stretch"
+        )
+
+
+
 # ============================================================
-# TAB 5: MODEL INFORMATION
+# TAB 5 : MODEL INFORMATION
 # ============================================================
 
 
@@ -360,30 +512,39 @@ with tab5:
 
 
     st.header(
-        "Model Details"
+        "🤖 Model Information"
     )
 
 
     st.write(
     """
-    Feature Extraction:
-    
-    ✔ TF-IDF
-    
-    ✔ N-gram
-    
-    
-    
-    Machine Learning Models:
-    
-    ✔ Multinomial Naive Bayes
-    
-    ✔ Support Vector Machine
-    
-    
-    
-    Best Model:
-    
-    SVM
-    """
+
+## Feature Extraction
+
+✔ TF-IDF Vectorization
+
+✔ N-gram Feature Extraction
+
+
+## Machine Learning Models
+
+### 1. Multinomial Naive Bayes ⭐
+
+Selected as final model because it achieved
+the highest accuracy.
+
+
+### 2. Support Vector Machine (SVM)
+
+Used as comparison model.
+
+
+## Final Model
+
+⭐ Naive Bayes
+
+The Naive Bayes classifier is used for the final
+BBC News category prediction.
+
+"""
     )

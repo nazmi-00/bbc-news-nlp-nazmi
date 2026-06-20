@@ -27,7 +27,7 @@ st.set_page_config(
 
 
 # ============================================================
-# CUSTOM COLORFUL UI
+# CUSTOM UI DESIGN
 # ============================================================
 
 
@@ -35,17 +35,15 @@ st.markdown(
 """
 <style>
 
-
 /* Background */
 
 .stApp {
 
-background:
-linear-gradient(
-135deg,
-#f5f7fa,
-#c3cfe2
-);
+    background: linear-gradient(
+        135deg,
+        #f5f7fa,
+        #c3cfe2
+    );
 
 }
 
@@ -55,21 +53,9 @@ linear-gradient(
 
 h1 {
 
-background:
-linear-gradient(
-90deg,
-#667eea,
-#764ba2
-);
+    color:#667eea;
 
-
--webkit-background-clip:text;
-
--webkit-text-fill-color:transparent;
-
-font-size:45px !important;
-
-font-weight:800;
+    font-weight:800;
 
 }
 
@@ -79,23 +65,18 @@ font-weight:800;
 
 [data-testid="stSidebar"] {
 
-
-background:
-
-linear-gradient(
-180deg,
-#667eea,
-#764ba2
-);
-
+    background: linear-gradient(
+        180deg,
+        #667eea,
+        #764ba2
+    );
 
 }
 
 
-
 [data-testid="stSidebar"] * {
 
-color:white;
+    color:white;
 
 }
 
@@ -103,86 +84,77 @@ color:white;
 
 /* Buttons */
 
-
-.stButton button {
-
-
-background:
-
-linear-gradient(
-90deg,
-#667eea,
-#764ba2
-);
+.stButton > button {
 
 
-color:white;
+    background:linear-gradient(
+        90deg,
+        #667eea,
+        #764ba2
+    );
 
-border-radius:20px;
 
-height:45px;
+    color:white;
 
-font-weight:bold;
+    border-radius:20px;
 
-border:none;
+    height:45px;
+
+    font-weight:bold;
+
+    border:none;
+
+}
+
+
+
+.stButton > button:hover {
+
+
+    background:linear-gradient(
+        90deg,
+        #764ba2,
+        #667eea
+    );
 
 
 }
 
 
 
-.stButton button:hover {
-
-
-background:
-
-linear-gradient(
-90deg,
-#764ba2,
-#667eea
-);
-
-
-}
-
-
-
-/* Cards */
-
+/* Metric Cards */
 
 [data-testid="metric-container"] {
 
 
-background:white;
+    background:white;
 
-padding:20px;
+    padding:20px;
 
-border-radius:15px;
+    border-radius:15px;
 
-box-shadow:
-
-0px 5px 15px rgba(0,0,0,0.15);
-
+    box-shadow:
+    0px 5px 15px rgba(0,0,0,0.15);
 
 }
 
 
 
-/* Text box */
+/* Text area */
+
 
 textarea {
 
 
-border-radius:15px !important;
+    border-radius:15px !important;
 
-border:2px solid #667eea !important;
-
+    border:2px solid #667eea !important;
 
 }
 
 
-</style>
 
+</style>
 """,
 unsafe_allow_html=True
 )
@@ -191,7 +163,7 @@ unsafe_allow_html=True
 
 
 # ============================================================
-# LOAD MODELS
+# LOAD MACHINE LEARNING MODELS
 # ============================================================
 
 
@@ -263,17 +235,14 @@ st.sidebar.markdown(
 
 
 page = st.sidebar.radio(
-
-"Navigation",
-
-[
-"🔍 Text Analyzer",
-"📊 Data Explorer",
-"☁️ Word Cloud",
-"📈 Model Performance",
-"🤖 Model Information"
-]
-
+    "Navigation",
+    [
+        "🔍 Text Analyzer",
+        "📊 Data Explorer",
+        "☁️ Word Cloud",
+        "📈 Model Performance",
+        "🤖 Model Information"
+    ]
 )
 
 
@@ -281,27 +250,18 @@ page = st.sidebar.radio(
 st.sidebar.divider()
 
 
-st.sidebar.info(
-
+st.sidebar.write(
 """
-SAIA 2163
+SAIA 2163 NLP Project
 
-Natural Language Processing
-
-Final Project
-
-
-Final Model:
-
-⭐ Multinomial Naive Bayes
-
-Feature:
-
+Feature Extraction:
 TF-IDF + N-gram
 
+Final Model:
+⭐ Multinomial Naive Bayes
 """
-
 )
+
 
 
 
@@ -312,65 +272,49 @@ TF-IDF + N-gram
 
 
 st.title(
-"📰 BBC News Article Categorizer"
+    "📰 BBC News Article Categorizer"
 )
 
 
 
 st.markdown(
-
 """
-
 <div style="
-
-background:linear-gradient(
-90deg,
-#667eea,
-#764ba2
-);
-
+background: linear-gradient(90deg,#667eea,#764ba2);
 padding:25px;
-
 border-radius:20px;
-
 color:white;
-
 ">
 
 
 <h2 style="color:white;">
-
 🚀 Intelligent News Classification System
-
 </h2>
 
 
-<p>
-
+<p style="color:white;font-size:18px;">
 Automatically classify BBC news articles using
 Natural Language Processing and Machine Learning.
-
 </p>
 
 
 </div>
 
 """,
-
 unsafe_allow_html=True
-
 )
 
 
 
 
+
 # ============================================================
-# PAGE 1 : TEXT ANALYZER
+# PAGE 1
+# TEXT ANALYZER
 # ============================================================
 
 
 if page == "🔍 Text Analyzer":
-
 
 
     st.header(
@@ -378,18 +322,11 @@ if page == "🔍 Text Analyzer":
     )
 
 
-
     text = st.text_area(
-
         "Enter news article:",
-
         height=250,
-
-        placeholder=
-        "Paste your news article here..."
-
+        placeholder="Paste article text here..."
     )
-
 
 
 
@@ -398,129 +335,89 @@ if page == "🔍 Text Analyzer":
     ):
 
 
-
         if text.strip():
 
 
-
             vector = tfidf.transform(
-
                 [text]
-
             )
 
 
-
             prediction = nb_model.predict(
-
                 vector
-
             )[0]
 
 
 
-
             st.markdown(
-
             f"""
-
             <div style="
-
-            background:linear-gradient(
-            90deg,
-            #43e97b,
-            #38f9d7
-            );
-
+            background:linear-gradient(90deg,#43e97b,#38f9d7);
             padding:20px;
-
             border-radius:20px;
-
             text-align:center;
-
             ">
 
 
-            <h2>
-
-            🎯 Prediction
-
+            <h2 style="color:white;">
+            🎯 Prediction Result
             </h2>
 
 
-            <h1>
-
+            <h1 style="color:white;">
             {prediction.upper()}
-
             </h1>
 
 
             </div>
 
             """,
-
             unsafe_allow_html=True
-
             )
-
 
 
 
             confidence = (
-
-            nb_model
-
-            .predict_proba(vector)
-
-            .max()
-
-            *100
-
+                nb_model
+                .predict_proba(vector)
+                .max()
+                *100
             )
 
 
-
             st.progress(
-
                 confidence/100
-
             )
 
 
             st.info(
-
-            f"Confidence Score: {confidence:.2f}%"
-
+                f"Confidence Score: {confidence:.2f}%"
             )
-
 
 
         else:
 
 
             st.warning(
-
-            "Please enter article text"
-
+                "Please enter article text"
             )
 
 
 
 
 
+
 # ============================================================
-# PAGE 2 : DATA EXPLORER
+# PAGE 2
+# DATA EXPLORER
 # ============================================================
 
 
 elif page == "📊 Data Explorer":
 
 
-
     st.header(
-
-    "📊 Dataset Explorer"
-
+        "📊 Dataset Explorer"
     )
 
 
@@ -532,11 +429,8 @@ elif page == "📊 Data Explorer":
     with col1:
 
         st.metric(
-
-        "Total Articles",
-
-        len(df)
-
+            "Total Articles",
+            len(df)
         )
 
 
@@ -544,80 +438,54 @@ elif page == "📊 Data Explorer":
     with col2:
 
         st.metric(
-
-        "Categories",
-
-        df["category"].nunique()
-
+            "Categories",
+            df["category"].nunique()
         )
 
 
 
     with col3:
 
-
         st.metric(
-
-        "Average Length",
-
-        round(
-        df["text"]
-        .str.len()
-        .mean()
+            "Average Length",
+            round(
+                df["text"]
+                .str.len()
+                .mean()
+            )
         )
-
-        )
-
 
 
 
     st.subheader(
-
-    "Sample Dataset"
-
+        "Dataset Preview"
     )
-
 
 
     st.dataframe(
-
-    df.head(10),
-
-    width="stretch"
-
+        df.head(10),
+        width="stretch"
     )
-
 
 
 
     st.subheader(
-
-    "Category Distribution"
-
+        "Category Distribution"
     )
-
 
 
     fig,ax = plt.subplots()
 
 
-
     sns.countplot(
-
-    data=df,
-
-    x="category",
-
-    ax=ax
-
+        data=df,
+        x="category",
+        ax=ax
     )
 
 
-
     plt.xticks(
-
-    rotation=45
-
+        rotation=45
     )
 
 
@@ -626,38 +494,32 @@ elif page == "📊 Data Explorer":
 
 
 
+
+
 # ============================================================
-# PAGE 3 : WORD CLOUD
+# PAGE 3
+# WORD CLOUD
 # ============================================================
 
 
 elif page == "☁️ Word Cloud":
 
 
-
     st.header(
-
-    "☁️ BBC News Word Cloud"
-
+        "☁️ BBC News Word Cloud"
     )
 
 
 
     if os.path.exists(
-
-    "images/wordcloud.png"
-
+        "images/wordcloud.png"
     ):
 
 
         st.image(
-
-        "images/wordcloud.png",
-
-        width="stretch",
-
-        caption="BBC News Word Cloud"
-
+            "images/wordcloud.png",
+            caption="BBC News Word Cloud",
+            width="stretch"
         )
 
 
@@ -665,17 +527,18 @@ elif page == "☁️ Word Cloud":
 
 
         st.error(
-
-        "wordcloud.png not found"
-
+            "Word cloud image not found"
         )
 
 
 
 
 
+
+
 # ============================================================
-# PAGE 4 : MODEL PERFORMANCE
+# PAGE 4
+# MODEL PERFORMANCE
 # ============================================================
 
 
@@ -684,9 +547,35 @@ elif page == "📈 Model Performance":
 
 
     st.header(
+        "📈 Model Performance"
+    )
 
-    "📈 Model Performance"
 
+
+    st.subheader(
+        "Model Accuracy Comparison"
+    )
+
+
+
+    if os.path.exists(
+        "images/model_comparison.png"
+    ):
+
+
+        st.image(
+            "images/model_comparison.png",
+            width="stretch"
+        )
+
+
+
+    st.divider()
+
+
+
+    st.subheader(
+        "Confusion Matrix"
     )
 
 
@@ -698,94 +587,50 @@ elif page == "📈 Model Performance":
     with col1:
 
 
-
-        st.subheader(
-
-        "Model Comparison"
-
+        st.markdown(
+            "### ⭐ Naive Bayes"
         )
 
 
         if os.path.exists(
-
-        "images/model_comparison.png"
-
+            "images/confusion_matrix_nb.png"
         ):
 
 
             st.image(
-
-            "images/model_comparison.png",
-
-            width="stretch"
-
+                "images/confusion_matrix_nb.png",
+                width="stretch"
             )
-
 
 
 
     with col2:
 
 
-
-        st.subheader(
-
-        "Naive Bayes Confusion Matrix"
-
+        st.markdown(
+            "### SVM"
         )
 
 
         if os.path.exists(
-
-        "images/confusion_matrix_nb.png"
-
+            "images/confusion_matrix_svm.png"
         ):
 
 
             st.image(
-
-            "images/confusion_matrix_nb.png",
-
-            width="stretch"
-
+                "images/confusion_matrix_svm.png",
+                width="stretch"
             )
 
 
 
 
 
-    st.divider()
-
-
-
-    st.subheader(
-
-    "SVM Confusion Matrix"
-
-    )
-
-
-    if os.path.exists(
-
-    "images/confusion_matrix_svm.png"
-
-    ):
-
-
-        st.image(
-
-        "images/confusion_matrix_svm.png",
-
-        width="stretch"
-
-        )
-
-
-
 
 
 # ============================================================
-# PAGE 5 : MODEL INFORMATION
+# PAGE 5
+# MODEL INFORMATION
 # ============================================================
 
 
@@ -794,99 +639,57 @@ elif page == "🤖 Model Information":
 
 
     st.header(
-
-    "🤖 NLP Pipeline Information"
-
+        "🤖 NLP Pipeline"
     )
 
 
 
     st.markdown(
-
-    """
-
+"""
 <div style="
-
 background:white;
-
 padding:25px;
-
 border-radius:20px;
-
 ">
 
 
 <h2>
-🧠 NLP Workflow
+🧠 System Workflow
 </h2>
 
 
-<b>
-1. Data Collection
-</b>
-
-<br>
-
-BBC News labelled dataset
+<p>
+<b>1. Dataset</b><br>
+BBC News Article Dataset
+</p>
 
 
-<br><br>
+<p>
+<b>2. Preprocessing</b><br>
+Text cleaning and preparation
+</p>
 
 
-<b>
-2. Text Preprocessing
-</b>
-
-<br>
-
-Cleaning, tokenization,
-stopword removal
-
-
-<br><br>
-
-
-<b>
-3. Feature Extraction
-</b>
-
-<br>
-
+<p>
+<b>3. Feature Extraction</b><br>
 TF-IDF + N-gram
+</p>
 
 
-<br><br>
+<p>
+<b>4. Machine Learning</b><br>
+Naive Bayes and SVM
+</p>
 
 
-<b>
-4. Machine Learning Models
-</b>
-
-<br>
-
-Multinomial Naive Bayes
-<br>
-Support Vector Machine
-
-
-<br><br>
-
-
-<b>
-5. Final Model
-</b>
-
-<br>
-
-⭐ Naive Bayes
-(selected based on highest accuracy)
+<p>
+<b>5. Final Model</b><br>
+⭐ Naive Bayes (Highest Accuracy)
+</p>
 
 
 </div>
 
-
 """,
-
 unsafe_allow_html=True
-
 )

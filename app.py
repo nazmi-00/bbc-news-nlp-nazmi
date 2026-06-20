@@ -1,6 +1,6 @@
 # ============================================================
-# BBC News Article Categorizer
-# SAIA 2163 NLP Final Project
+# BBC NEWS ARTICLE CATEGORIZER
+# SAIA 2163 NLP FINAL PROJECT
 # ============================================================
 
 
@@ -14,7 +14,7 @@ import os
 
 
 # ============================================================
-# Page Configuration
+# PAGE CONFIGURATION
 # ============================================================
 
 
@@ -27,7 +27,7 @@ st.set_page_config(
 
 
 # ============================================================
-# Custom Sidebar Style
+# CUSTOM COLORFUL UI
 # ============================================================
 
 
@@ -35,22 +35,163 @@ st.markdown(
 """
 <style>
 
-[data-testid="stSidebar"] {
 
-    min-width: 260px;
-    max-width: 260px;
+/* Background */
+
+.stApp {
+
+background:
+linear-gradient(
+135deg,
+#f5f7fa,
+#c3cfe2
+);
 
 }
 
+
+
+/* Title */
+
+h1 {
+
+background:
+linear-gradient(
+90deg,
+#667eea,
+#764ba2
+);
+
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+font-size:45px !important;
+
+font-weight:800;
+
+}
+
+
+
+/* Sidebar */
+
+[data-testid="stSidebar"] {
+
+
+background:
+
+linear-gradient(
+180deg,
+#667eea,
+#764ba2
+);
+
+
+}
+
+
+
+[data-testid="stSidebar"] * {
+
+color:white;
+
+}
+
+
+
+/* Buttons */
+
+
+.stButton button {
+
+
+background:
+
+linear-gradient(
+90deg,
+#667eea,
+#764ba2
+);
+
+
+color:white;
+
+border-radius:20px;
+
+height:45px;
+
+font-weight:bold;
+
+border:none;
+
+
+}
+
+
+
+.stButton button:hover {
+
+
+background:
+
+linear-gradient(
+90deg,
+#764ba2,
+#667eea
+);
+
+
+}
+
+
+
+/* Cards */
+
+
+[data-testid="metric-container"] {
+
+
+background:white;
+
+padding:20px;
+
+border-radius:15px;
+
+box-shadow:
+
+0px 5px 15px rgba(0,0,0,0.15);
+
+
+}
+
+
+
+/* Text box */
+
+textarea {
+
+
+border-radius:15px !important;
+
+border:2px solid #667eea !important;
+
+
+}
+
+
 </style>
+
 """,
 unsafe_allow_html=True
 )
 
 
 
+
 # ============================================================
-# Load Models
+# LOAD MODELS
 # ============================================================
 
 
@@ -77,12 +218,14 @@ def load_models():
 
 
 
+
 nb_model, svm_model, tfidf = load_models()
 
 
 
+
 # ============================================================
-# Load Dataset
+# LOAD DATASET
 # ============================================================
 
 
@@ -99,29 +242,38 @@ def load_data():
 
 
 
+
 df = load_data()
 
 
 
+
 # ============================================================
-# Sidebar Navigation
+# SIDEBAR MENU
 # ============================================================
 
 
-st.sidebar.title(
-    "📰 BBC News NLP"
+st.sidebar.markdown(
+"""
+# 📰 BBC NLP
+## Article Categorizer
+"""
 )
 
 
+
 page = st.sidebar.radio(
-    "Navigation",
-    [
-        "🔍 Text Analyzer",
-        "📊 Data Explorer",
-        "☁️ Word Cloud",
-        "📈 Model Performance",
-        "🤖 Model Information"
-    ]
+
+"Navigation",
+
+[
+"🔍 Text Analyzer",
+"📊 Data Explorer",
+"☁️ Word Cloud",
+"📈 Model Performance",
+"🤖 Model Information"
+]
+
 )
 
 
@@ -130,36 +282,85 @@ st.sidebar.divider()
 
 
 st.sidebar.info(
+
 """
 SAIA 2163
 
 Natural Language Processing
+
 Final Project
 
-Model:
+
+Final Model:
+
 ⭐ Multinomial Naive Bayes
+
+Feature:
+
+TF-IDF + N-gram
+
 """
+
 )
 
 
 
+
 # ============================================================
-# Main Title
+# HEADER
 # ============================================================
 
 
 st.title(
-    "📰 BBC News Article Categorizer"
+"📰 BBC News Article Categorizer"
 )
 
 
-st.write(
+
+st.markdown(
+
 """
-An NLP application that automatically classifies BBC news articles
-into different categories using TF-IDF + N-gram feature extraction
-and Machine Learning algorithms.
-"""
+
+<div style="
+
+background:linear-gradient(
+90deg,
+#667eea,
+#764ba2
+);
+
+padding:25px;
+
+border-radius:20px;
+
+color:white;
+
+">
+
+
+<h2 style="color:white;">
+
+🚀 Intelligent News Classification System
+
+</h2>
+
+
+<p>
+
+Automatically classify BBC news articles using
+Natural Language Processing and Machine Learning.
+
+</p>
+
+
+</div>
+
+""",
+
+unsafe_allow_html=True
+
 )
+
 
 
 
@@ -171,16 +372,25 @@ and Machine Learning algorithms.
 if page == "🔍 Text Analyzer":
 
 
+
     st.header(
         "🔍 News Article Classification"
     )
 
 
+
     text = st.text_area(
+
         "Enter news article:",
+
         height=250,
-        placeholder="Paste BBC news article here..."
+
+        placeholder=
+        "Paste your news article here..."
+
     )
+
+
 
 
     if st.button(
@@ -188,47 +398,100 @@ if page == "🔍 Text Analyzer":
     ):
 
 
+
         if text.strip():
 
 
+
             vector = tfidf.transform(
+
                 [text]
+
             )
+
 
 
             prediction = nb_model.predict(
+
                 vector
+
             )[0]
 
 
-            st.success(
-                f"Predicted Category: {prediction.upper()}"
+
+
+            st.markdown(
+
+            f"""
+
+            <div style="
+
+            background:linear-gradient(
+            90deg,
+            #43e97b,
+            #38f9d7
+            );
+
+            padding:20px;
+
+            border-radius:20px;
+
+            text-align:center;
+
+            ">
+
+
+            <h2>
+
+            🎯 Prediction
+
+            </h2>
+
+
+            <h1>
+
+            {prediction.upper()}
+
+            </h1>
+
+
+            </div>
+
+            """,
+
+            unsafe_allow_html=True
+
             )
 
 
 
-            if hasattr(
-                nb_model,
-                "predict_proba"
-            ):
+
+            confidence = (
+
+            nb_model
+
+            .predict_proba(vector)
+
+            .max()
+
+            *100
+
+            )
 
 
-                confidence = (
-                    nb_model
-                    .predict_proba(vector)
-                    .max()
-                    *100
-                )
+
+            st.progress(
+
+                confidence/100
+
+            )
 
 
-                st.progress(
-                    confidence / 100
-                )
+            st.info(
 
+            f"Confidence Score: {confidence:.2f}%"
 
-                st.info(
-                    f"Confidence Score: {confidence:.2f}%"
-                )
+            )
 
 
 
@@ -236,8 +499,12 @@ if page == "🔍 Text Analyzer":
 
 
             st.warning(
-                "Please enter article text."
+
+            "Please enter article text"
+
             )
+
+
 
 
 
@@ -249,9 +516,13 @@ if page == "🔍 Text Analyzer":
 elif page == "📊 Data Explorer":
 
 
+
     st.header(
-        "📊 Dataset Explorer"
+
+    "📊 Dataset Explorer"
+
     )
+
 
 
     col1,col2,col3 = st.columns(3)
@@ -261,8 +532,11 @@ elif page == "📊 Data Explorer":
     with col1:
 
         st.metric(
-            "Total Articles",
-            len(df)
+
+        "Total Articles",
+
+        len(df)
+
         )
 
 
@@ -270,73 +544,85 @@ elif page == "📊 Data Explorer":
     with col2:
 
         st.metric(
-            "Categories",
-            df["category"].nunique()
+
+        "Categories",
+
+        df["category"].nunique()
+
         )
 
 
 
     with col3:
 
-        avg_length = round(
-            df["text"]
-            .str.len()
-            .mean()
-        )
-
 
         st.metric(
-            "Average Text Length",
-            avg_length
+
+        "Average Length",
+
+        round(
+        df["text"]
+        .str.len()
+        .mean()
         )
+
+        )
+
 
 
 
     st.subheader(
-        "Dataset Sample"
+
+    "Sample Dataset"
+
     )
+
 
 
     st.dataframe(
-        df.head(10),
-        width="stretch"
+
+    df.head(10),
+
+    width="stretch"
+
     )
+
 
 
 
     st.subheader(
-        "Category Distribution"
+
+    "Category Distribution"
+
     )
 
 
-    fig,ax = plt.subplots(
-        figsize=(8,4)
-    )
+
+    fig,ax = plt.subplots()
+
 
 
     sns.countplot(
-        data=df,
-        x="category",
-        ax=ax
+
+    data=df,
+
+    x="category",
+
+    ax=ax
+
     )
 
-
-    ax.set_xlabel(
-        "Category"
-    )
-
-
-    ax.set_ylabel(
-        "Number of Articles"
-    )
 
 
     plt.xticks(
-        rotation=45
+
+    rotation=45
+
     )
 
 
     st.pyplot(fig)
+
 
 
 
@@ -348,23 +634,30 @@ elif page == "📊 Data Explorer":
 elif page == "☁️ Word Cloud":
 
 
+
     st.header(
-        "☁️ BBC News Word Cloud"
+
+    "☁️ BBC News Word Cloud"
+
     )
 
 
-    image_path = (
-        "images/wordcloud.png"
-    )
 
+    if os.path.exists(
 
-    if os.path.exists(image_path):
+    "images/wordcloud.png"
+
+    ):
 
 
         st.image(
-            image_path,
-            caption="Most Frequent Words in BBC News Dataset",
-            width="stretch"
+
+        "images/wordcloud.png",
+
+        width="stretch",
+
+        caption="BBC News Word Cloud"
+
         )
 
 
@@ -372,8 +665,12 @@ elif page == "☁️ Word Cloud":
 
 
         st.error(
-            "wordcloud.png not found"
+
+        "wordcloud.png not found"
+
         )
+
+
 
 
 
@@ -385,43 +682,13 @@ elif page == "☁️ Word Cloud":
 elif page == "📈 Model Performance":
 
 
+
     st.header(
-        "📈 Model Performance"
+
+    "📈 Model Performance"
+
     )
 
-
-    st.subheader(
-        "Model Accuracy Comparison"
-    )
-
-
-    if os.path.exists(
-        "images/model_comparison.png"
-    ):
-
-
-        st.image(
-            "images/model_comparison.png",
-            width="stretch"
-        )
-
-
-    else:
-
-
-        st.warning(
-            "Model comparison image not found"
-        )
-
-
-
-    st.divider()
-
-
-
-    st.subheader(
-        "Confusion Matrix Comparison"
-    )
 
 
     col1,col2 = st.columns(2)
@@ -431,58 +698,89 @@ elif page == "📈 Model Performance":
     with col1:
 
 
-        st.write(
-            "### Naive Bayes"
+
+        st.subheader(
+
+        "Model Comparison"
+
         )
 
 
         if os.path.exists(
-            "images/confusion_matrix_nb.png"
+
+        "images/model_comparison.png"
+
         ):
 
 
             st.image(
-                "images/confusion_matrix_nb.png",
-                caption="Naive Bayes Confusion Matrix",
-                width="stretch"
+
+            "images/model_comparison.png",
+
+            width="stretch"
+
             )
 
-
-        else:
-
-
-            st.error(
-                "Naive Bayes confusion matrix not found"
-            )
 
 
 
     with col2:
 
 
-        st.write(
-            "### SVM"
+
+        st.subheader(
+
+        "Naive Bayes Confusion Matrix"
+
         )
 
 
         if os.path.exists(
-            "images/confusion_matrix_svm.png"
+
+        "images/confusion_matrix_nb.png"
+
         ):
 
 
             st.image(
-                "images/confusion_matrix_svm.png",
-                caption="SVM Confusion Matrix",
-                width="stretch"
+
+            "images/confusion_matrix_nb.png",
+
+            width="stretch"
+
             )
 
 
-        else:
 
 
-            st.error(
-                "SVM confusion matrix not found"
-            )
+
+    st.divider()
+
+
+
+    st.subheader(
+
+    "SVM Confusion Matrix"
+
+    )
+
+
+    if os.path.exists(
+
+    "images/confusion_matrix_svm.png"
+
+    ):
+
+
+        st.image(
+
+        "images/confusion_matrix_svm.png",
+
+        width="stretch"
+
+        )
+
+
 
 
 
@@ -494,44 +792,101 @@ elif page == "📈 Model Performance":
 elif page == "🤖 Model Information":
 
 
+
     st.header(
-        "🤖 Model Information"
+
+    "🤖 NLP Pipeline Information"
+
     )
+
 
 
     st.markdown(
-"""
-## Feature Extraction
 
-### TF-IDF + N-gram
+    """
 
-- TF-IDF measures the importance of words
-- N-gram captures word combinations and context
+<div style="
 
+background:white;
 
----
+padding:25px;
 
-## Machine Learning Models
+border-radius:20px;
 
-
-### ⭐ Multinomial Naive Bayes
-
-Selected final model because it achieved
-the highest accuracy.
+">
 
 
-### Support Vector Machine (SVM)
+<h2>
+🧠 NLP Workflow
+</h2>
 
-Used as comparison model.
+
+<b>
+1. Data Collection
+</b>
+
+<br>
+
+BBC News labelled dataset
 
 
----
+<br><br>
 
-## Final Prediction Model
+
+<b>
+2. Text Preprocessing
+</b>
+
+<br>
+
+Cleaning, tokenization,
+stopword removal
+
+
+<br><br>
+
+
+<b>
+3. Feature Extraction
+</b>
+
+<br>
+
+TF-IDF + N-gram
+
+
+<br><br>
+
+
+<b>
+4. Machine Learning Models
+</b>
+
+<br>
+
+Multinomial Naive Bayes
+<br>
+Support Vector Machine
+
+
+<br><br>
+
+
+<b>
+5. Final Model
+</b>
+
+<br>
 
 ⭐ Naive Bayes
+(selected based on highest accuracy)
 
-The system uses Naive Bayes to classify
-BBC news articles into categories.
-"""
-    )
+
+</div>
+
+
+""",
+
+unsafe_allow_html=True
+
+)

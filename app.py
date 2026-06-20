@@ -9,13 +9,14 @@ import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
-from wordcloud import WordCloud
+import os
 
 
 
 # ============================================================
 # Page Configuration
 # ============================================================
+
 
 st.set_page_config(
     page_title="BBC News Categorizer",
@@ -26,43 +27,25 @@ st.set_page_config(
 
 
 # ============================================================
-# Sidebar
+# Custom Sidebar Style
 # ============================================================
 
-with st.sidebar:
 
-    st.title(
-        "📰 BBC News NLP"
-    )
+st.markdown(
+"""
+<style>
 
-    st.write(
-    """
-    **Natural Language Processing Application**
+[data-testid="stSidebar"] {
 
-    This application classifies BBC news articles
-    into different categories.
+    min-width: 260px;
+    max-width: 260px;
 
-    NLP Techniques:
+}
 
-    ✔ Text Preprocessing  
-    ✔ TF-IDF  
-    ✔ N-gram Feature Extraction  
-    ✔ Naive Bayes Classification  
-    ✔ SVM Comparison
-    """
-    )
-
-
-    st.divider()
-
-
-    st.info(
-        """
-        SAIA 2163
-
-        NLP Final Project
-        """
-    )
+</style>
+""",
+unsafe_allow_html=True
+)
 
 
 
@@ -70,8 +53,10 @@ with st.sidebar:
 # Load Models
 # ============================================================
 
+
 @st.cache_resource
 def load_models():
+
 
     nb_model = joblib.load(
         "models/nb_model.pkl"
@@ -100,12 +85,15 @@ nb_model, svm_model, tfidf = load_models()
 # Load Dataset
 # ============================================================
 
+
 @st.cache_data
 def load_data():
+
 
     df = pd.read_csv(
         "data/bbc-text.csv"
     )
+
 
     return df
 
@@ -116,7 +104,47 @@ df = load_data()
 
 
 # ============================================================
-# Title
+# Sidebar Navigation
+# ============================================================
+
+
+st.sidebar.title(
+    "📰 BBC News NLP"
+)
+
+
+page = st.sidebar.radio(
+    "Navigation",
+    [
+        "🔍 Text Analyzer",
+        "📊 Data Explorer",
+        "☁️ Word Cloud",
+        "📈 Model Performance",
+        "🤖 Model Information"
+    ]
+)
+
+
+
+st.sidebar.divider()
+
+
+st.sidebar.info(
+"""
+SAIA 2163
+
+Natural Language Processing
+Final Project
+
+Model:
+⭐ Multinomial Naive Bayes
+"""
+)
+
+
+
+# ============================================================
+# Main Title
 # ============================================================
 
 
@@ -128,36 +156,19 @@ st.title(
 st.write(
 """
 An NLP application that automatically classifies BBC news articles
-into categories using TF-IDF + N-gram feature extraction and
-Machine Learning algorithms.
+into different categories using TF-IDF + N-gram feature extraction
+and Machine Learning algorithms.
 """
 )
 
 
 
 # ============================================================
-# Navigation Tabs
+# PAGE 1 : TEXT ANALYZER
 # ============================================================
 
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-[
-"🔍 Text Analyzer",
-"📊 Data Explorer",
-"☁️ Word Cloud",
-"📈 Model Performance",
-"🤖 Model Information"
-]
-)
-
-
-
-# ============================================================
-# TAB 1 : TEXT ANALYZER
-# ============================================================
-
-
-with tab1:
+if page == "🔍 Text Analyzer":
 
 
     st.header(
@@ -166,9 +177,9 @@ with tab1:
 
 
     text = st.text_area(
-        "Enter News Article:",
+        "Enter news article:",
         height=250,
-        placeholder="Paste article content here..."
+        placeholder="Paste BBC news article here..."
     )
 
 
@@ -180,14 +191,10 @@ with tab1:
         if text.strip():
 
 
-            # Convert text into TF-IDF + N-gram features
-
             vector = tfidf.transform(
                 [text]
             )
 
-
-            # Final model = Naive Bayes
 
             prediction = nb_model.predict(
                 vector
@@ -199,8 +206,6 @@ with tab1:
             )
 
 
-
-            # Confidence score
 
             if hasattr(
                 nb_model,
@@ -231,17 +236,17 @@ with tab1:
 
 
             st.warning(
-                "Please enter news article text."
+                "Please enter article text."
             )
 
 
 
 # ============================================================
-# TAB 2 : DATA EXPLORER
+# PAGE 2 : DATA EXPLORER
 # ============================================================
 
 
-with tab2:
+elif page == "📊 Data Explorer":
 
 
     st.header(
@@ -294,15 +299,14 @@ with tab2:
 
     st.dataframe(
         df.head(10),
-        use_container_width=True
+        width="stretch"
     )
 
 
 
     st.subheader(
-        "News Category Distribution"
+        "Category Distribution"
     )
-
 
 
     fig,ax = plt.subplots(
@@ -337,114 +341,82 @@ with tab2:
 
 
 # ============================================================
-# TAB 3 : WORD CLOUD
+# PAGE 3 : WORD CLOUD
 # ============================================================
 
 
-with tab3:
+elif page == "☁️ Word Cloud":
 
 
     st.header(
-        "☁️ Word Cloud"
+        "☁️ BBC News Word Cloud"
     )
 
 
-    wordcloud_path = (
+    image_path = (
         "images/wordcloud.png"
     )
 
 
-    try:
+    if os.path.exists(image_path):
+
 
         st.image(
-            wordcloud_path,
-            caption="BBC News Word Cloud",
+            image_path,
+            caption="Most Frequent Words in BBC News Dataset",
             width="stretch"
         )
 
 
-    except:
+    else:
+
 
         st.error(
-            "Word cloud image not found. Please upload images/wordcloud.png"
+            "wordcloud.png not found"
         )
+
+
+
 # ============================================================
-# TAB 4 : MODEL PERFORMANCE
+# PAGE 4 : MODEL PERFORMANCE
 # ============================================================
 
 
-with tab4:
+elif page == "📈 Model Performance":
 
 
     st.header(
-        "📈 Model Performance Comparison"
+        "📈 Model Performance"
     )
 
 
-
-    results = pd.DataFrame(
-    {
-
-        "Model":
-        [
-            "Naive Bayes",
-            "SVM"
-        ],
-
-
-        "Accuracy":
-        [
-            0.984,
-            0.982
-        ],
-
-
-        "Status":
-        [
-            "⭐ Selected Model",
-            "Comparison Model"
-        ]
-
-    })
-
-
-
-    st.dataframe(
-        results
+    st.subheader(
+        "Model Accuracy Comparison"
     )
 
 
-
-    # Accuracy chart
-
-
-    fig,ax = plt.subplots()
+    if os.path.exists(
+        "images/model_comparison.png"
+    ):
 
 
-    sns.barplot(
-        data=results,
-        x="Model",
-        y="Accuracy",
-        ax=ax
-    )
+        st.image(
+            "images/model_comparison.png",
+            width="stretch"
+        )
 
 
-    ax.set_ylim(
-        0,
-        1
-    )
+    else:
 
 
-    ax.set_title(
-        "Accuracy Comparison"
-    )
-
-
-    st.pyplot(fig)
+        st.warning(
+            "Model comparison image not found"
+        )
 
 
 
-    # Confusion Matrix
+    st.divider()
+
 
 
     st.subheader(
@@ -459,41 +431,67 @@ with tab4:
     with col1:
 
 
-        st.markdown(
+        st.write(
             "### Naive Bayes"
         )
 
 
-        st.image(
-            "images/confusion_matrix_nb.png",
-            caption="Naive Bayes Confusion Matrix",
-            width="stretch"
-        )
+        if os.path.exists(
+            "images/confusion_matrix_nb.png"
+        ):
+
+
+            st.image(
+                "images/confusion_matrix_nb.png",
+                caption="Naive Bayes Confusion Matrix",
+                width="stretch"
+            )
+
+
+        else:
+
+
+            st.error(
+                "Naive Bayes confusion matrix not found"
+            )
 
 
 
     with col2:
 
 
-        st.markdown(
+        st.write(
             "### SVM"
         )
 
 
-        st.image(
-            "images/confusion_matrix_svm.png",
-            caption="SVM Confusion Matrix",
-            width="stretch"
-        )
+        if os.path.exists(
+            "images/confusion_matrix_svm.png"
+        ):
+
+
+            st.image(
+                "images/confusion_matrix_svm.png",
+                caption="SVM Confusion Matrix",
+                width="stretch"
+            )
+
+
+        else:
+
+
+            st.error(
+                "SVM confusion matrix not found"
+            )
 
 
 
 # ============================================================
-# TAB 5 : MODEL INFORMATION
+# PAGE 5 : MODEL INFORMATION
 # ============================================================
 
 
-with tab5:
+elif page == "🤖 Model Information":
 
 
     st.header(
@@ -501,35 +499,39 @@ with tab5:
     )
 
 
-    st.write(
-    """
-
+    st.markdown(
+"""
 ## Feature Extraction
 
-✔ TF-IDF Vectorization
+### TF-IDF + N-gram
 
-✔ N-gram Feature Extraction
+- TF-IDF measures the importance of words
+- N-gram captures word combinations and context
 
+
+---
 
 ## Machine Learning Models
 
-### 1. Multinomial Naive Bayes ⭐
 
-Selected as final model because it achieved
+### ⭐ Multinomial Naive Bayes
+
+Selected final model because it achieved
 the highest accuracy.
 
 
-### 2. Support Vector Machine (SVM)
+### Support Vector Machine (SVM)
 
 Used as comparison model.
 
 
-## Final Model
+---
+
+## Final Prediction Model
 
 ⭐ Naive Bayes
 
-The Naive Bayes classifier is used for the final
-BBC News category prediction.
-
+The system uses Naive Bayes to classify
+BBC news articles into categories.
 """
     )

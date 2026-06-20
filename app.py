@@ -349,40 +349,25 @@ with tab3:
     )
 
 
-    all_text = " ".join(
-        df["text"].astype(str)
+    wordcloud_path = (
+        "images/wordcloud.png"
     )
 
 
-    wordcloud = WordCloud(
-        width=1000,
-        height=500,
-        background_color="white"
-    ).generate(
-        all_text
-    )
+    try:
+
+        st.image(
+            wordcloud_path,
+            caption="BBC News Word Cloud",
+            width="stretch"
+        )
 
 
+    except:
 
-    fig,ax = plt.subplots(
-        figsize=(12,5)
-    )
-
-
-    ax.imshow(
-        wordcloud
-    )
-
-
-    ax.axis(
-        "off"
-    )
-
-
-    st.pyplot(fig)
-
-
-
+        st.error(
+            "Word cloud image not found. Please upload images/wordcloud.png"
+        )
 # ============================================================
 # TAB 4 : MODEL PERFORMANCE
 # ============================================================

@@ -113,8 +113,6 @@ st.sidebar.markdown(
 3. **NAZMI BIN SIDEK** *(A24AI0069)*
 
 ---
-**SAIA 2163 NLP Project** *Method:* TF-IDF + N-gram  
-*Deploy:* Multinomial NB (98.4%)
 """
 )
 

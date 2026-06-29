@@ -439,7 +439,7 @@ elif page == "ℹ️ Model Information":
 <div style="background:white; padding:25px; border-radius:20px; box-shadow: 0px 5px 15px rgba(0,0,0,0.08);">
     <h2>🧠 System Workflow</h2>
     <p><b>1. Dataset</b><br>BBC News Standard Text Corpus (2,225 samples)</p>
-    <p><b>2. Preprocessing</b><br>Lowercasing, RegEx Punctuation Removal, Tokenization</p>
+    <p><b>2. Preprocessing</b><br>Lowercasing, RegEx Punctuation Removal, Tokenization, Stopword Elimination & Lemmatization</p>
     <p><b>3. Feature Extraction</b><br>TF-IDF (Term Frequency-Inverse Document Frequency) + N-grams</p>
     <p><b>4. Machine Learning Classifiers</b><br>Multinomial Naive Bayes & Support Vector Machine (Linear Kernel)</p>
     <p><b>5. Final Production Model</b><br>⭐ <b>Multinomial Naive Bayes</b> (Selected for optimal validation accuracy)</p>
